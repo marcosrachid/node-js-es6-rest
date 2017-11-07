@@ -1,6 +1,6 @@
 import express from 'express';
-import SiteController from '../controllers/SiteController';
-import Site from '../models/Site';
+import SiteController from '../controllers/site-controller';
+import Site from '../models/site';
 
 const router = express.Router();
 const siteController = new SiteController(Site);
