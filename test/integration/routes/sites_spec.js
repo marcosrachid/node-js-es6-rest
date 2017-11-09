@@ -1,4 +1,4 @@
-import Site from '../../../src/models/site.js';
+import Site from '../../../src/models/site';
 
 describe('Routes: Sites', () => {
 
