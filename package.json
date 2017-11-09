@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node index.js",
-    "start:production": "SET NODE_ENV=production&&babel-node index.js",
+    "start:windows:production": "SET NODE_ENV=production&&babel-node index.js",
+    "start:linux:production": "export NODE_ENV=production&&babel-node index.js",
     "test": "echo \"Error: no test specified\"&&exit 1",
-    "test:integration": "SET NODE_ENV=test&&mocha --opts test/integration/mocha.opts test/integration/**/*_spec.js",
-    "test:unit": "SET NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js"
+    "test:windows:integration": "SET NODE_ENV=test&&mocha --opts test/integration/mocha.opts test/integration/**/*_spec.js",
+    "test:linux:integration": "export NODE_ENV=test&&mocha --opts test/integration/mocha.opts test/integration/**/*_spec.js",
+    "test:windows:unit": "SET NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js",
+    "test:linux:unit": "export NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js"
   },
   "repository": {
     "type": "git",
