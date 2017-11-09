@@ -1,3 +1,4 @@
+"use strict";
 import express from 'express';
 import SiteController from '../controllers/site-controller';
 import Site from '../models/site';
