@@ -1,4 +1,5 @@
 "use strict";
+
 class SiteController {
   constructor(Site) {
     this.Site = Site;

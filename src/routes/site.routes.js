@@ -1,7 +1,7 @@
 "use strict";
 import express from 'express';
-import SiteController from '../controllers/site-controller';
-import Site from '../models/site';
+import SiteController from '../controllers/site.controller';
+import Site from '../models/site.model';
 
 const router = express.Router();
 const siteController = new SiteController(Site);

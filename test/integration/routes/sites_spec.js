@@ -1,4 +1,5 @@
-import Site from '../../../src/models/site';
+"use strict";
+import Site from '../../../src/models/site.model';
 
 describe('Routes: Sites', () => {
 

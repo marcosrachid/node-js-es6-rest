@@ -2,7 +2,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import multiparty from 'connect-multiparty';
-import routes from './routes/site-routes';
+import routes from './routes/site.routes';
 import database from './config/database'
 
 const app = express();

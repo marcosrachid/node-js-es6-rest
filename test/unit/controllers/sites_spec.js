@@ -1,44 +1,55 @@
-import SiteController from '../../../src/controllers/site-controller';
-import sinon from 'sinon';
-import Site from '../../../src/models/site';
+"use strict";
+import SiteController from '../../../src/controllers/site.controller';
+import Site from '../../../src/models/site.model';
 
 describe('Controller: Site', () => {
   const defaultSite = { "_id" : '5a011039a27e510f9c6ef726', "url" : "http://www.marcosrachid.com.br", "description" : "portifolio 4", "__v" : 0 };
-  const defaultRequest = { params: {} };
   const mockSite = { "url" : "http://www.marcosrachid.com.br", "description" : "portifolio 4" };
-  const expectedSite = { "_id" : '5a011039a27e510f9c6ef726', "url" : "http://www.marcosrachid.com.br", "description" : "portifolio 4", "__v" : 0 };
+  const defaultRequest = { params: {} };
 
   describe('get() sites', () => {
     it('should call send with a list of sites', () => {
       const response = {
         send: sinon.spy()
       };
-      Site.find = sinon.stub();
-      Site.find.withArgs({}).resolves([defaultSite]);
+
+      const SiteMock = sinon.mock(Site);
+      SiteMock
+        .expects('find')
+        .withArgs({})
+        .resolves([defaultSite]);
 
       const siteController = new SiteController(Site);
 
       return siteController.get(defaultRequest, response)
         .then(() => {
+          SiteMock.verify();
+          SiteMock.restore();
           sinon.assert.calledWith(response.send, [defaultSite]);
         });
     });
 
     context('when an error occurs', () => {
-      it('should return 400', done => {
+      it('should return 400', () => {
         const request = {};
         const response = {
           send: sinon.spy(),
           status: sinon.stub()
         };
+
         response.status.withArgs(400).returns(response);
-        Site.find = sinon.stub();
-        Site.find.withArgs({}).rejects({ message: 'Error' });
+        const SiteMock = sinon.mock(Site);
+        SiteMock
+          .expects('find')
+          .withArgs({})
+          .rejects({ message: 'Error' });
 
         const siteController = new SiteController(Site);
 
         return siteController.get(request, response)
           .then(() => {
+            SiteMock.verify();
+            SiteMock.restore();
             sinon.assert.calledWith(response.send, 'Error');
           });
       });
@@ -46,7 +57,7 @@ describe('Controller: Site', () => {
   });
 
   describe('getById() site', () => {
-    it('should call send with one site', done => {
+    it('should call send with one site', () => {
       const mockId = 'anyId';
       const request = {
         params: {
@@ -57,19 +68,24 @@ describe('Controller: Site', () => {
         send: sinon.spy()
       };
 
-      Site.find = sinon.stub();
-      Site.find.withArgs({ _id: mockId }).resolves([defaultSite]);
+      const SiteMock = sinon.mock(Site);
+      SiteMock
+        .expects('find')
+        .withArgs({ _id: mockId })
+        .resolves([defaultSite]);
 
       const siteController = new SiteController(Site);
 
       return siteController.getById(request, response)
         .then(() => {
+          SiteMock.verify();
+          SiteMock.restore();
           sinon.assert.calledWith(response.send, [defaultSite]);
         });
     });
 
     context('when an error occurs', () => {
-      it('should return 400', done => {
+      it('should return 400', () => {
         const mockId = 'anyId';
         const request = {
           params: {
@@ -82,13 +98,18 @@ describe('Controller: Site', () => {
         };
 
         response.status.withArgs(400).returns(response);
-        Site.find = sinon.stub();
-        Site.find.withArgs({ _id: mockId }).rejects({ message: 'Error' });
+        const SiteMock = sinon.mock(Site);
+        SiteMock
+          .expects('find')
+          .withArgs({ _id: mockId })
+          .rejects({ message: 'Error' });
 
         const siteController = new SiteController(Site);
 
         return siteController.getById(request, response)
           .then(() => {
+            SiteMock.verify();
+            SiteMock.restore();
             sinon.assert.calledWith(response.send, 'Error');
           });
       });
@@ -96,36 +117,177 @@ describe('Controller: Site', () => {
   });
 
   describe('create() site', () => {
-    it('should call send with a new site', done => {
+    it('should call send with a new site', () => {
+      const requestWithBody = Object.assign({}, { body: mockSite }, defaultRequest);
+      const response = {
+        send: sinon.spy(),
+        status: sinon.stub()
+      };
+      class FakeSite {
+        save(){};
+      }
+
+      response.status.withArgs(201).returns(response);
+      sinon.stub(FakeSite.prototype, 'save')
+        .withArgs()
+        .resolves();
+
+      const siteController = new SiteController(FakeSite);
+
+      return siteController.create(requestWithBody, response)
+        .then(() => {
+          sinon.assert.calledWith(response.status, 201);
+          sinon.assert.calledWith(response.send);
+        });
     });
 
     context('when an error occurs', () => {
-      it('should return 422', done => {
+      it('should return 422', () => {
+        const requestWithBody = Object.assign({}, { body: mockSite }, defaultRequest);
+        const response = {
+          send: sinon.spy(),
+          status: sinon.stub()
+        };
+        class FakeSite {
+          save(){};
+        }
 
+        response.status.withArgs(422).returns(response);
+        sinon.stub(FakeSite.prototype, 'save')
+          .withArgs()
+          .rejects({ message: 'Error' });
+
+        const siteController = new SiteController(FakeSite);
+
+        return siteController.create(requestWithBody, response)
+          .then(() => {
+            sinon.assert.calledWith(response.status, 422);
+            sinon.assert.calledWith(response.send, 'Error');
+          });
       });
     });
   });
 
   describe('update() site', () => {
-    it('should respond with 200 when the site has been updated', done => {
+    it('should respond with 200 when the site has been updated', () => {
+      const mockId = 'anyId';
+      let updatedSite = defaultSite;
+      updatedSite._id = mockId;
+      updatedSite.mockSite = 'http://www.fwcreative.esp.br/';
+      const request = {
+        params: {
+          id: mockId
+        },
+        body: updatedSite
+      };
+      const response = {
+        sendStatus: sinon.spy()
+      };
+      class FakeSite {
+        static findOneAndUpdate() {}
+      }
 
+      sinon.stub(FakeSite, 'findOneAndUpdate')
+        .withArgs({ _id: mockId }, updatedSite)
+        .resolves();
+
+      const siteController = new SiteController(FakeSite);
+
+      return siteController.update(request, response)
+        .then(() => {
+          sinon.assert.calledWith(response.sendStatus, 200);
+        });
     });
 
     context('when an error occurs', () => {
-      it('should return 422', done => {
+      it('should return 422', () => {
+        const mockId = 'anyId';
+        let updatedSite = defaultSite;
+        updatedSite._id = mockId;
+        updatedSite.mockSite = 'http://www.fwcreative.esp.br/';
+        const request = {
+          params: {
+            id: mockId
+          },
+          body: updatedSite
+        };
+        const response = {
+          send: sinon.spy(),
+          status: sinon.stub()
+        };
+        class FakeSite {
+          static findOneAndUpdate() {}
+        }
 
+        response.status.withArgs(422).returns(response);
+        sinon.stub(FakeSite, 'findOneAndUpdate')
+          .withArgs({ _id: mockId }, updatedSite)
+          .rejects({ message: 'Error' });
+
+        const siteController = new SiteController(FakeSite);
+
+        return siteController.update(request, response)
+          .then(() => {
+            sinon.assert.calledWith(response.send, 'Error');
+          });
       });
     });
   });
 
   describe('remove() site', () => {
-    it('should respond with 204 when the site has been deleted', done => {
+    it('should respond with 204 when the site has been deleted', () => {
+      const mockId = 'anyId';
+      const request = {
+        params: {
+          id: mockId
+        }
+      };
+      const response = {
+        sendStatus: sinon.spy()
+      };
+      class FakeSite {
+        static remove() {}
+      }
 
+      sinon.stub(FakeSite, 'remove')
+        .withArgs({ _id: mockId })
+        .resolves();
+
+      const siteController = new SiteController(FakeSite);
+
+      return siteController.remove(request, response)
+        .then(() => {
+          sinon.assert.calledWith(response.sendStatus, 204);
+        });
     });
 
     context('when an error occurs', () => {
-      it('should return 400', done => {
+      it('should return 400', () => {
+        const mockId = 'anyId';
+        const request = {
+          params: {
+            id: mockId
+          }
+        };
+        const response = {
+          send: sinon.spy(),
+          status: sinon.stub()
+        };
+        class FakeSite {
+          static remove() {}
+        }
 
+        response.status.withArgs(400).returns(response);
+        sinon.stub(FakeSite, 'remove')
+          .withArgs({ _id: mockId })
+          .rejects({message: 'Error'});
+
+        const siteController = new SiteController(FakeSite);
+
+        return siteController.remove(request, response)
+          .then(() => {
+            sinon.assert.calledWith(response.send, 'Error');
+          });
       });
     });
   });
