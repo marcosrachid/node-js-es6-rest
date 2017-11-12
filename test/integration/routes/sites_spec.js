@@ -1,14 +1,30 @@
 "use strict";
 import Site from '../../../src/models/site.model';
+import User from '../../../src/models/user.model';
 
 describe('Routes: Sites', () => {
 
+  const mockUser = { "fullName": "Fullname", "email": "email@email.com", "hash_password": "$2a$10$5RnDk8/NDaHMQx/cruN/QOizdlG3RucgLiSlXeGnIRv7dNTKxv5gG" };
+  const signinUser = { "email": "email@email.com", "password": "123456" };
   let request;
+  let token;
 
-  before(()=> {
+  before(() => {
     return app()
-      .then(appplication => {
-        request = supertest(appplication);
+      .then(application => {
+        request = supertest(application);
+      })
+      .then(() => {
+        const user = new User(mockUser);
+        User.remove({})
+          .then(() => user.save());
+      })
+      .then(() => {
+        request.post('/site/api/v1/auth/sign_in')
+          .send(signinUser)
+          .end((err, res) => {
+            token = res.body.token;
+          });
       });
   });
 
@@ -17,18 +33,17 @@ describe('Routes: Sites', () => {
   const expectedSite = { "_id" : id, "url" : "http://www.marcosrachid.com.br", "description" : "portifolio 4", "__v" : 0 };
 
   beforeEach(() => {
-    const site = new Site(mockSite);
-    site._id = id;
-    return Site.remove({})
-      .then(() => site.save());
+      const site = new Site(mockSite);
+      site._id = id;
+      return Site.remove({})
+        .then(() => site.save());
   });
 
-  afterEach(() => Site.remove({}));
-
-  describe('GET /api', () => {
+  describe('GET /site/api/v1/', () => {
     it('should return a list of sites', done => {
       request
-        .get(`/api`)
+        .get(`/site/api/v1/`)
+        .set({"Authorization": token})
         .end((err, res) => {
           expect(res.body).to.eql([expectedSite]);
           done(err);
@@ -38,9 +53,9 @@ describe('Routes: Sites', () => {
     context('when an id is specified', () => {
       it('should return a single site', done => {
         request
-          .get(`/api/${id}`)
+          .get(`/site/api/v1/${id}`)
+          .set({"Authorization": token})
           .end((err, res) => {
-            expect(res.body.length).to.eql(1);
             expect(res.body).to.eql(expectedSite);
             done(err);
           });
@@ -48,13 +63,14 @@ describe('Routes: Sites', () => {
     });
   });
 
-  describe('POST /api', () => {
+  describe('POST /site/api/v1/', () => {
     context('when inserting a site', () => {
       it('should return a new site with code 201 as status code', done => {
         const customId = '56cb91bdc3464f14678934ba';
         const newSite = Object.assign({},{ _id: customId, __v:0 }, mockSite);
         request
-          .post('/api')
+          .post('/site/api/v1/')
+          .set({"Authorization": token})
           .send(newSite)
           .end((err, res) => {
             expect(res.statusCode).to.eql(201);
@@ -64,7 +80,7 @@ describe('Routes: Sites', () => {
     });
   });
 
-  describe('PUT /api/:id', () => {
+  describe('PUT /site/api/v1/:id', () => {
     context('when updating a site', () => {
       it('should update the site and return 200 as status code', done => {
         const customSite = {
@@ -72,7 +88,8 @@ describe('Routes: Sites', () => {
         };
         const updatedSite = Object.assign({}, customSite, mockSite);
         request
-          .put(`/api/${id}`)
+          .put(`/site/api/v1/${id}`)
+          .set({"Authorization": token})
           .send(updatedSite)
           .end((err, res) => {
             expect(res.status).to.eql(200);
@@ -82,11 +99,12 @@ describe('Routes: Sites', () => {
     });
   });
 
-  describe('DELETE /api/:id', () => {
+  describe('DELETE /site/api/v1/:id', () => {
     context('when deleting a site', () => {
       it('should delete a site and return 204 as status code', done => {
         request
-          .delete(`/api/${id}`)
+          .delete(`/site/api/v1/${id}`)
+          .set({"Authorization": token})
           .end((err, res) => {
             expect(res.status).to.eql(204);
             done(err);
