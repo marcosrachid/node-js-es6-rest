@@ -7,36 +7,36 @@ class SiteController {
 
   get(req, res) {
    return this.Site.find({})
-     .then(sites => res.send(sites))
-     .catch(err => res.status(400).send(err.message));
+     .then(sites => res.json(sites))
+     .catch(err => res.status(400).json(err));
  }
 
  getById(req, res) {
    const { params: { id } } = req;
 
-   return this.Site.find({ _id:id })
-     .then(sites => res.send(sites))
-     .catch(err => res.status(400).send(err.message));
+   return this.Site.findOne({ _id: id })
+     .then(site => res.json(site))
+     .catch(err => res.status(400).json(err));
  }
 
  create(req, res) {
    const site = new this.Site(req.body);
 
    return site.save()
-     .then(() => res.status(201).send(site))
-     .catch(err => res.status(422).send(err.message));
+     .then(() => res.status(201).send(''))
+     .catch(err => res.status(422).json(err));
  }
 
  update(req, res) {
    return this.Site.findOneAndUpdate({ _id: req.params.id}, req.body)
-     .then(() => res.sendStatus(200))
-     .catch(err => res.status(422).send(err.message));
+     .then(() => res.status(200).send(''))
+     .catch(err => res.status(422).json(err));
  }
 
  remove(req, res) {
    return this.Site.remove({ _id: req.params.id})
-     .then(() => res.sendStatus(204))
-     .catch(err => res.status(400).send(err.message));
+     .then(() => res.status(204).send(''))
+     .catch(err => res.status(400).json(err.message));
  }
 
 }

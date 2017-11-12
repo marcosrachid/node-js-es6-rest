@@ -41,7 +41,7 @@ describe('Routes: Sites', () => {
           .get(`/api/${id}`)
           .end((err, res) => {
             expect(res.body.length).to.eql(1);
-            expect(res.body).to.eql([expectedSite]);
+            expect(res.body).to.eql(expectedSite);
             done(err);
           });
       });
@@ -53,13 +53,11 @@ describe('Routes: Sites', () => {
       it('should return a new site with code 201 as status code', done => {
         const customId = '56cb91bdc3464f14678934ba';
         const newSite = Object.assign({},{ _id: customId, __v:0 }, mockSite);
-        const expectedSavedSite = { __v: 0, _id: customId, "url" : "http://www.marcosrachid.com.br", "description" : "portifolio 4" };
         request
           .post('/api')
           .send(newSite)
           .end((err, res) => {
             expect(res.statusCode).to.eql(201);
-            expect(res.body).to.eql(expectedSavedSite);
             done(err);
         });
       });

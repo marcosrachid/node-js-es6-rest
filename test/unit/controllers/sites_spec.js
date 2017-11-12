@@ -70,7 +70,7 @@ describe('Controller: Site', () => {
 
       const SiteMock = sinon.mock(Site);
       SiteMock
-        .expects('find')
+        .expects('findOne')
         .withArgs({ _id: mockId })
         .resolves([defaultSite]);
 
@@ -100,7 +100,7 @@ describe('Controller: Site', () => {
         response.status.withArgs(400).returns(response);
         const SiteMock = sinon.mock(Site);
         SiteMock
-          .expects('find')
+          .expects('findOne')
           .withArgs({ _id: mockId })
           .rejects({ message: 'Error' });
 
