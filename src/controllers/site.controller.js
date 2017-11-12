@@ -36,7 +36,7 @@ class SiteController {
  remove(req, res) {
    return this.Site.remove({ _id: req.params.id})
      .then(() => res.status(204).send(''))
-     .catch(err => res.status(400).json(err.message));
+     .catch(err => res.status(400).json(err));
  }
 
 }

@@ -10,7 +10,7 @@ describe('Controller: Site', () => {
   describe('get() sites', () => {
     it('should call send with a list of sites', () => {
       const response = {
-        send: sinon.spy()
+        json: sinon.spy()
       };
 
       const SiteMock = sinon.mock(Site);
@@ -25,7 +25,7 @@ describe('Controller: Site', () => {
         .then(() => {
           SiteMock.verify();
           SiteMock.restore();
-          sinon.assert.calledWith(response.send, [defaultSite]);
+          sinon.assert.calledWith(response.json, [defaultSite]);
         });
     });
 
@@ -33,7 +33,7 @@ describe('Controller: Site', () => {
       it('should return 400', () => {
         const request = {};
         const response = {
-          send: sinon.spy(),
+          json: sinon.spy(),
           status: sinon.stub()
         };
 
@@ -50,7 +50,7 @@ describe('Controller: Site', () => {
           .then(() => {
             SiteMock.verify();
             SiteMock.restore();
-            sinon.assert.calledWith(response.send, 'Error');
+            sinon.assert.calledWith(response.json, { message: 'Error' });
           });
       });
     });
@@ -65,7 +65,7 @@ describe('Controller: Site', () => {
         }
       };
       const response = {
-        send: sinon.spy()
+        json: sinon.spy()
       };
 
       const SiteMock = sinon.mock(Site);
@@ -80,7 +80,7 @@ describe('Controller: Site', () => {
         .then(() => {
           SiteMock.verify();
           SiteMock.restore();
-          sinon.assert.calledWith(response.send, [defaultSite]);
+          sinon.assert.calledWith(response.json, [defaultSite]);
         });
     });
 
@@ -93,7 +93,7 @@ describe('Controller: Site', () => {
           }
         };
         const response = {
-          send: sinon.spy(),
+          json: sinon.spy(),
           status: sinon.stub()
         };
 
@@ -110,7 +110,7 @@ describe('Controller: Site', () => {
           .then(() => {
             SiteMock.verify();
             SiteMock.restore();
-            sinon.assert.calledWith(response.send, 'Error');
+            sinon.assert.calledWith(response.json, { message: 'Error' });
           });
       });
     });
@@ -145,7 +145,7 @@ describe('Controller: Site', () => {
       it('should return 422', () => {
         const requestWithBody = Object.assign({}, { body: mockSite }, defaultRequest);
         const response = {
-          send: sinon.spy(),
+          json: sinon.spy(),
           status: sinon.stub()
         };
         class FakeSite {
@@ -162,7 +162,7 @@ describe('Controller: Site', () => {
         return siteController.create(requestWithBody, response)
           .then(() => {
             sinon.assert.calledWith(response.status, 422);
-            sinon.assert.calledWith(response.send, 'Error');
+            sinon.assert.calledWith(response.json, { message: 'Error' });
           });
       });
     });
@@ -181,12 +181,14 @@ describe('Controller: Site', () => {
         body: updatedSite
       };
       const response = {
-        sendStatus: sinon.spy()
+        send: sinon.spy(),
+        status: sinon.stub()
       };
       class FakeSite {
         static findOneAndUpdate() {}
       }
 
+      response.status.withArgs(200).returns(response);
       sinon.stub(FakeSite, 'findOneAndUpdate')
         .withArgs({ _id: mockId }, updatedSite)
         .resolves();
@@ -195,7 +197,8 @@ describe('Controller: Site', () => {
 
       return siteController.update(request, response)
         .then(() => {
-          sinon.assert.calledWith(response.sendStatus, 200);
+          sinon.assert.calledWith(response.status, 200);
+          sinon.assert.calledWith(response.send);
         });
     });
 
@@ -212,7 +215,7 @@ describe('Controller: Site', () => {
           body: updatedSite
         };
         const response = {
-          send: sinon.spy(),
+          json: sinon.spy(),
           status: sinon.stub()
         };
         class FakeSite {
@@ -228,7 +231,8 @@ describe('Controller: Site', () => {
 
         return siteController.update(request, response)
           .then(() => {
-            sinon.assert.calledWith(response.send, 'Error');
+            sinon.assert.calledWith(response.status, 422);
+            sinon.assert.calledWith(response.json, { message: 'Error' });
           });
       });
     });
@@ -243,12 +247,14 @@ describe('Controller: Site', () => {
         }
       };
       const response = {
-        sendStatus: sinon.spy()
+        send: sinon.spy(),
+        status: sinon.stub()
       };
       class FakeSite {
         static remove() {}
       }
 
+      response.status.withArgs(204).returns(response);
       sinon.stub(FakeSite, 'remove')
         .withArgs({ _id: mockId })
         .resolves();
@@ -257,7 +263,8 @@ describe('Controller: Site', () => {
 
       return siteController.remove(request, response)
         .then(() => {
-          sinon.assert.calledWith(response.sendStatus, 204);
+          sinon.assert.calledWith(response.status, 204);
+          sinon.assert.calledWith(response.send);
         });
     });
 
@@ -270,7 +277,7 @@ describe('Controller: Site', () => {
           }
         };
         const response = {
-          send: sinon.spy(),
+          json: sinon.spy(),
           status: sinon.stub()
         };
         class FakeSite {
@@ -280,13 +287,14 @@ describe('Controller: Site', () => {
         response.status.withArgs(400).returns(response);
         sinon.stub(FakeSite, 'remove')
           .withArgs({ _id: mockId })
-          .rejects({message: 'Error'});
+          .rejects({ message: 'Error' });
 
         const siteController = new SiteController(FakeSite);
 
         return siteController.remove(request, response)
           .then(() => {
-            sinon.assert.calledWith(response.send, 'Error');
+            sinon.assert.calledWith(response.status, 400);
+            sinon.assert.calledWith(response.json, { message: 'Error' });
           });
       });
     });
