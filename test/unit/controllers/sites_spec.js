@@ -124,7 +124,7 @@ describe('Controller: Site', () => {
         status: sinon.stub()
       };
       class FakeSite {
-        save(){};
+        save(){}
       }
 
       response.status.withArgs(201).returns(response);
@@ -149,7 +149,7 @@ describe('Controller: Site', () => {
           status: sinon.stub()
         };
         class FakeSite {
-          save(){};
+          save(){}
         }
 
         response.status.withArgs(422).returns(response);

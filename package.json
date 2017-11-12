@@ -11,7 +11,8 @@
     "test:windows:integration": "SET NODE_ENV=test&&mocha --opts test/integration/mocha.opts test/integration/**/*_spec.js",
     "test:linux:integration": "export NODE_ENV=test&&mocha --opts test/integration/mocha.opts test/integration/**/*_spec.js",
     "test:windows:unit": "SET NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js",
-    "test:linux:unit": "export NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js"
+    "test:linux:unit": "export NODE_ENV=test&&mocha --opts test/unit/mocha.opts test/unit/**/*_spec.js",
+    "lint": "eslint **/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,20 +25,19 @@
   },
   "homepage": "https://github.com/marcosrachid/node-js-es6-rest#readme",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "config": "^1.28.0",
     "connect-multiparty": "^2.1.0",
     "express": "^4.16.2",
-    "jwt-simple": "^0.5.1",
-    "mongoose": "^4.12.6",
-    "passport": "^0.4.0",
-    "passport-jwt": "^3.0.1"
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^4.12.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
+    "eslint": "^4.11.0",
     "mocha": "^4.0.1",
     "sinon": "^4.0.2",
     "supertest": "^3.0.0"

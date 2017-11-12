@@ -80,7 +80,7 @@ describe('Routes: Sites', () => {
             expect(res.status).to.eql(200);
             done(err);
         });
-      })
+      });
     });
   });
 

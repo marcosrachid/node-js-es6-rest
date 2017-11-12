@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import multiparty from 'connect-multiparty';
 import routes from './routes/site.routes';
-import database from './config/database'
+import database from './config/database';
 
 const app = express();
 const configureExpress = () => {
@@ -19,7 +19,7 @@ const configureExpress = () => {
       next();
   });
 
-  return app
+  return app;
 };
 
 

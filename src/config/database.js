@@ -12,4 +12,4 @@ const connect = () => mongoose.connect(mongodbUrl, {
 
 export default {
   connect
-}
+};
