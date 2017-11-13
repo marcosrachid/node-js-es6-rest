@@ -123,19 +123,20 @@ describe('Controller: Site', () => {
         send: sinon.spy(),
         status: sinon.stub()
       };
-      class FakeSite {
-        save(){}
-      }
 
       response.status.withArgs(201).returns(response);
-      sinon.stub(FakeSite.prototype, 'save')
+      const SiteMock = sinon.mock(Site.prototype);
+      SiteMock
+        .expects('save')
         .withArgs()
         .resolves();
 
-      const siteController = new SiteController(FakeSite);
+      const siteController = new SiteController(Site);
 
       return siteController.create(requestWithBody, response)
         .then(() => {
+          SiteMock.verify();
+          SiteMock.restore();
           sinon.assert.calledWith(response.status, 201);
           sinon.assert.calledWith(response.send);
         });
@@ -148,19 +149,20 @@ describe('Controller: Site', () => {
           json: sinon.spy(),
           status: sinon.stub()
         };
-        class FakeSite {
-          save(){}
-        }
 
         response.status.withArgs(422).returns(response);
-        sinon.stub(FakeSite.prototype, 'save')
+        const SiteMock = sinon.mock(Site.prototype);
+        SiteMock
+          .expects('save')
           .withArgs()
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(FakeSite);
+        const siteController = new SiteController(Site);
 
         return siteController.create(requestWithBody, response)
           .then(() => {
+            SiteMock.verify();
+            SiteMock.restore();
             sinon.assert.calledWith(response.status, 422);
             sinon.assert.calledWith(response.json, { message: 'Error' });
           });
@@ -184,19 +186,20 @@ describe('Controller: Site', () => {
         send: sinon.spy(),
         status: sinon.stub()
       };
-      class FakeSite {
-        static findOneAndUpdate() {}
-      }
 
       response.status.withArgs(200).returns(response);
-      sinon.stub(FakeSite, 'findOneAndUpdate')
+      const SiteMock = sinon.mock(Site);
+      SiteMock
+        .expects('findOneAndUpdate')
         .withArgs({ _id: mockId }, updatedSite)
         .resolves();
 
-      const siteController = new SiteController(FakeSite);
+      const siteController = new SiteController(Site);
 
       return siteController.update(request, response)
         .then(() => {
+          SiteMock.verify();
+          SiteMock.restore();
           sinon.assert.calledWith(response.status, 200);
           sinon.assert.calledWith(response.send);
         });
@@ -218,19 +221,20 @@ describe('Controller: Site', () => {
           json: sinon.spy(),
           status: sinon.stub()
         };
-        class FakeSite {
-          static findOneAndUpdate() {}
-        }
 
         response.status.withArgs(422).returns(response);
-        sinon.stub(FakeSite, 'findOneAndUpdate')
+        const SiteMock = sinon.mock(Site);
+        SiteMock
+          .expects('findOneAndUpdate')
           .withArgs({ _id: mockId }, updatedSite)
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(FakeSite);
+        const siteController = new SiteController(Site);
 
         return siteController.update(request, response)
           .then(() => {
+            SiteMock.verify();
+            SiteMock.restore();
             sinon.assert.calledWith(response.status, 422);
             sinon.assert.calledWith(response.json, { message: 'Error' });
           });
@@ -250,19 +254,20 @@ describe('Controller: Site', () => {
         send: sinon.spy(),
         status: sinon.stub()
       };
-      class FakeSite {
-        static remove() {}
-      }
 
       response.status.withArgs(204).returns(response);
-      sinon.stub(FakeSite, 'remove')
+      const SiteMock = sinon.mock(Site);
+      SiteMock
+        .expects('remove')
         .withArgs({ _id: mockId })
         .resolves();
 
-      const siteController = new SiteController(FakeSite);
+      const siteController = new SiteController(Site);
 
       return siteController.remove(request, response)
         .then(() => {
+          SiteMock.verify();
+          SiteMock.restore();
           sinon.assert.calledWith(response.status, 204);
           sinon.assert.calledWith(response.send);
         });
@@ -280,19 +285,20 @@ describe('Controller: Site', () => {
           json: sinon.spy(),
           status: sinon.stub()
         };
-        class FakeSite {
-          static remove() {}
-        }
 
         response.status.withArgs(400).returns(response);
-        sinon.stub(FakeSite, 'remove')
+        const SiteMock = sinon.mock(Site);
+        SiteMock
+          .expects('remove')
           .withArgs({ _id: mockId })
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(FakeSite);
+        const siteController = new SiteController(Site);
 
         return siteController.remove(request, response)
           .then(() => {
+            SiteMock.verify();
+            SiteMock.restore();
             sinon.assert.calledWith(response.status, 400);
             sinon.assert.calledWith(response.json, { message: 'Error' });
           });

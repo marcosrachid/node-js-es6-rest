@@ -1,14 +1,12 @@
 "use strict";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import User from '../models/user.model';
 
 class UserController {
-  constructor(User) {
-    this.User = User;
-  }
 
   register(req, res) {
-    let user = new this.User(req.body);
+    let user = new User(req.body);
     user.hash_password = bcrypt.hashSync(req.body.password, 10);
     return user.save()
       .then(() => res.status(201).send(''))
@@ -16,7 +14,7 @@ class UserController {
   }
 
   signIn(req, res) {
-    this.User.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
           return res.status(401).json({ message: 'Authentication failed. User not found.' });

@@ -1,13 +1,11 @@
 "use strict";
 import express from 'express';
 import SiteController from '../controllers/site.controller';
-import Site from '../models/site.model';
 import UserController from '../controllers/user.controller';
-import User from '../models/user.model';
 
 const router = express.Router();
-const siteController = new SiteController(Site);
-const userController = new UserController(User);
+const siteController = new SiteController();
+const userController = new UserController();
 router.all('/*', (req, res, next) => userController.loginRequired(req, res, next));
 router.get('/', (req, res) => siteController.get(req, res));
 router.get('/:id', (req, res) => siteController.getById(req, res));
