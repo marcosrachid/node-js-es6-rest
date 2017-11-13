@@ -19,7 +19,7 @@ describe('Controller: Site', () => {
         .withArgs({})
         .resolves([defaultSite]);
 
-      const siteController = new SiteController(Site);
+      const siteController = new SiteController();
 
       return siteController.get(defaultRequest, response)
         .then(() => {
@@ -44,7 +44,7 @@ describe('Controller: Site', () => {
           .withArgs({})
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(Site);
+        const siteController = new SiteController();
 
         return siteController.get(request, response)
           .then(() => {
@@ -74,7 +74,7 @@ describe('Controller: Site', () => {
         .withArgs({ _id: mockId })
         .resolves([defaultSite]);
 
-      const siteController = new SiteController(Site);
+      const siteController = new SiteController();
 
       return siteController.getById(request, response)
         .then(() => {
@@ -104,7 +104,7 @@ describe('Controller: Site', () => {
           .withArgs({ _id: mockId })
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(Site);
+        const siteController = new SiteController();
 
         return siteController.getById(request, response)
           .then(() => {
@@ -131,7 +131,7 @@ describe('Controller: Site', () => {
         .withArgs()
         .resolves();
 
-      const siteController = new SiteController(Site);
+      const siteController = new SiteController();
 
       return siteController.create(requestWithBody, response)
         .then(() => {
@@ -157,7 +157,7 @@ describe('Controller: Site', () => {
           .withArgs()
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(Site);
+        const siteController = new SiteController();
 
         return siteController.create(requestWithBody, response)
           .then(() => {
@@ -194,7 +194,7 @@ describe('Controller: Site', () => {
         .withArgs({ _id: mockId }, updatedSite)
         .resolves();
 
-      const siteController = new SiteController(Site);
+      const siteController = new SiteController();
 
       return siteController.update(request, response)
         .then(() => {
@@ -229,7 +229,7 @@ describe('Controller: Site', () => {
           .withArgs({ _id: mockId }, updatedSite)
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(Site);
+        const siteController = new SiteController();
 
         return siteController.update(request, response)
           .then(() => {
@@ -262,7 +262,7 @@ describe('Controller: Site', () => {
         .withArgs({ _id: mockId })
         .resolves();
 
-      const siteController = new SiteController(Site);
+      const siteController = new SiteController();
 
       return siteController.remove(request, response)
         .then(() => {
@@ -293,7 +293,7 @@ describe('Controller: Site', () => {
           .withArgs({ _id: mockId })
           .rejects({ message: 'Error' });
 
-        const siteController = new SiteController(Site);
+        const siteController = new SiteController();
 
         return siteController.remove(request, response)
           .then(() => {
